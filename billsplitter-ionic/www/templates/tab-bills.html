@@ -1,0 +1,16 @@
+<ion-view view-title="Bills">
+  <ion-content>
+    <ion-list>
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="bill in bills" type="item-text-wrap" href="#/tab/bills/{{bill.id}}">
+        <img ng-src="{{bill.face}}">
+        <h2>{{bill.payee}}</h2>
+        <p>{{bill.amount}}</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+
+        <ion-option-button class="button-assertive" ng-click="remove(bill)">
+          Delete
+        </ion-option-button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
