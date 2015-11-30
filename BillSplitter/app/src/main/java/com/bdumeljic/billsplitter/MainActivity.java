@@ -1,6 +1,7 @@
 package com.bdumeljic.billsplitter;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,10 +21,12 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import com.bdumeljic.billsplitter.dummy.DummyContent;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GroupFragment.OnFragmentInteractionListener, PersonalFragment.OnFragmentInteractionListener, BillsFragment.OnListFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -95,6 +98,16 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -142,9 +155,16 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            switch (position) {
+                case 0:
+                    return GroupFragment.newInstance("", "");
+                case 1:
+                    return PersonalFragment.newInstance("", "");
+                case 2:
+                    return BillsFragment.newInstance(1);
+                default:
+                    return null;
+            }
         }
 
         @Override
