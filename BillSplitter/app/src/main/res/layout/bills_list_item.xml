@@ -1,20 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/text_margin">
+
+        <TextView
+            android:id="@+id/bill_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="name"
+            android:textAppearance="@android:style/TextAppearance.Material.Body1" />
+
+        <TextView
+            android:id="@+id/bill_payee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="paid by "
+            android:textAppearance="@android:style/TextAppearance.Material.Caption" />
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/id"
+        android:id="@+id/bill_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
-
-    <TextView
-        android:id="@+id/content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
-</LinearLayout>
+        android:text="€ "
+        android:textAppearance="@android:style/TextAppearance.Material.Body2"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true" />
+</RelativeLayout>

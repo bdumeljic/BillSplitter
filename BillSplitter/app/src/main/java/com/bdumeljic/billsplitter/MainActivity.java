@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -20,8 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.TextView;
-
-import com.bdumeljic.billsplitter.dummy.DummyContent;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -104,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements GroupFragment.OnF
     }
 
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+    public void onListFragmentInteraction(Bill item) {
 
     }
 

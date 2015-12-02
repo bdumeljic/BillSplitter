@@ -6,13 +6,15 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bdumeljic.billsplitter.dummy.DummyContent;
-import com.bdumeljic.billsplitter.dummy.DummyContent.DummyItem;
+import com.parse.FindCallback;
+import com.parse.ParseException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +31,11 @@ public class BillsFragment extends Fragment {
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
 
+    private RecyclerView mRecyclerView;
+    private BillsRecyclerViewAdapter mBillsAdapter;
+
+    private static List<Bill> mBills;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -43,6 +50,8 @@ public class BillsFragment extends Fragment {
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
+
+        mBills = new ArrayList<Bill>();
         return fragment;
     }
 
@@ -53,6 +62,8 @@ public class BillsFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+
+        getBills();
     }
 
     @Override
@@ -63,17 +74,33 @@ public class BillsFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            mRecyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+                mRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new BillsRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            mBillsAdapter = new BillsRecyclerViewAdapter(mBills, mListener);
+            mRecyclerView.setAdapter(mBillsAdapter);
         }
         return view;
     }
 
+    public void getBills() {
+        Bill.getQuery().findInBackground(new FindCallback<Bill>() {
+            @Override
+            public void done(List<Bill> list, ParseException e) {
+                if (e == null) {
+                    Log.d("bills", "Retrieved " + list.size() + " bills");
+                    mBills.clear();
+                    mBills.addAll(list);
+                    mBillsAdapter.notifyDataSetChanged();
+                } else {
+                    Log.d("bills", "Error: " + e.getMessage());
+                }
+            }
+        });
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -104,6 +131,6 @@ public class BillsFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(Bill item);
     }
 }

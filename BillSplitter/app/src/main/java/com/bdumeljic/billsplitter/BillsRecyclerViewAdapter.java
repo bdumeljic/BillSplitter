@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.bdumeljic.billsplitter.dummy.DummyContent.DummyItem;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,11 +18,11 @@ import java.util.List;
  */
 public class BillsRecyclerViewAdapter extends RecyclerView.Adapter<BillsRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private List<Bill> mValues = Collections.emptyList();
     private final BillsFragment.OnListFragmentInteractionListener mListener;
 
-    public BillsRecyclerViewAdapter(List<DummyItem> items, BillsFragment.OnListFragmentInteractionListener listener) {
-        mValues = items;
+    public BillsRecyclerViewAdapter(List<Bill> bills, BillsFragment.OnListFragmentInteractionListener listener) {
+        this.mValues = bills;
         mListener = listener;
     }
 
@@ -36,9 +37,10 @@ public class BillsRecyclerViewAdapter extends RecyclerView.Adapter<BillsRecycler
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mBill = mValues.get(position);
+        holder.mBillNameView.setText(mValues.get(position).getName());
+        holder.mBillAmountView.append(String.valueOf(mValues.get(position).getAmount()));
+        holder.mBillPayeeView.setText(mValues.get(position).getPayee());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,7 +48,7 @@ public class BillsRecyclerViewAdapter extends RecyclerView.Adapter<BillsRecycler
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onListFragmentInteraction(holder.mBill);
                 }
             }
         });
@@ -59,20 +61,22 @@ public class BillsRecyclerViewAdapter extends RecyclerView.Adapter<BillsRecycler
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public DummyItem mItem;
+        public final TextView mBillNameView;
+        public final TextView mBillAmountView;
+        public final TextView mBillPayeeView;
+        public Bill mBill;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mBillPayeeView = (TextView) view.findViewById(R.id.bill_payee);
+            mBillNameView = (TextView) view.findViewById(R.id.bill_name);
+            mBillAmountView = (TextView) view.findViewById(R.id.bill_amount);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mBillAmountView.getText() + "'";
         }
     }
 }
