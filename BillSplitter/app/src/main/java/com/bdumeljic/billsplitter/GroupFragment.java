@@ -4,9 +4,25 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 
 /**
@@ -29,6 +45,15 @@ public class GroupFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    @Bind(R.id.group_name) TextView mGroupName;
+    @Bind(R.id.group_number_members) TextView mGroupMembers;
+    @Bind(R.id.group_number_bills) TextView mGroupBills;
+    @Bind(R.id.group_spent) TextView mGroupSpent;
+    @Bind(R.id.list_recent_bills) RecyclerView mGroupMembersList;
+
+    private MembersRecyclerViewAdapter mMembersAdapter;
+    private static List<ParseUser> mMembers;
+
     public GroupFragment() {
         // Required empty public constructor
     }
@@ -48,6 +73,8 @@ public class GroupFragment extends Fragment {
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
+
+        mMembers = new ArrayList<ParseUser>();
         return fragment;
     }
 
@@ -58,13 +85,54 @@ public class GroupFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        getGroup();
     }
 
+    public void getGroup() {
+        ParseQuery<Group> query = Group.getQuery();
+        query.whereEqualTo("name", "Kista Gang");
+        query.getFirstInBackground(new GetCallback<Group>() {
+            public void done(Group group, ParseException e) {
+                if (group == null) {
+                    Log.d("group", "The getFirst request failed.");
+                } else {
+                    Log.d("group", "Retrieved the object.");
+
+                    //group.addMembers();
+
+                    mGroupName.setText(group.getName());
+                    mGroupMembers.setText(String.valueOf(group.getMembersAmount()));
+
+                    group.getMembersList().getQuery().findInBackground(new FindCallback<ParseUser>() {
+                        @Override
+                        public void done(List<ParseUser> list, ParseException e) {
+                            if (e == null) {
+                                mMembers.clear();
+                                for (ParseUser user : list) {
+                                    mMembers.add(user);
+                                }
+                                Log.d("group", mMembers.toString());
+                                mMembersAdapter.notifyDataSetChanged();
+                            } else {
+                                Log.d("group", "Error: " + e.getMessage());
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_group, container, false);
+        View view = inflater.inflate(R.layout.fragment_group, container, false);
+        ButterKnife.bind(this, view);
+        mGroupMembersList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mMembersAdapter = new MembersRecyclerViewAdapter(getActivity(), mMembers);
+        mGroupMembersList.setAdapter(mMembersAdapter);
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
