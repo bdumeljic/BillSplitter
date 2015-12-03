@@ -13,9 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.ParseException;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -47,12 +45,17 @@ public class GroupFragment extends Fragment {
 
     @Bind(R.id.group_name) TextView mGroupName;
     @Bind(R.id.group_number_members) TextView mGroupMembers;
-    @Bind(R.id.group_number_bills) TextView mGroupBills;
+    @Bind(R.id.group_number_bills) TextView mGroupNumberBills;
     @Bind(R.id.group_spent) TextView mGroupSpent;
     @Bind(R.id.list_recent_bills) RecyclerView mGroupMembersList;
 
+    private ParseUser mCurrentUser;
+    private Group mCurrentGroup;
+
     private MembersRecyclerViewAdapter mMembersAdapter;
     private static List<ParseUser> mMembers;
+
+    private MainActivity mActivity;
 
     public GroupFragment() {
         // Required empty public constructor
@@ -86,43 +89,33 @@ public class GroupFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        getGroup();
+        //getGroup();
+
+        Log.d("GroupFragment", "current user " + mActivity.getCurrentUser() + " group " + mActivity.getCurrentGroup());
+        mCurrentUser = mActivity.getCurrentUser();
+        mCurrentGroup = mActivity.getCurrentGroup();
     }
 
-    public void getGroup() {
-        ParseQuery<Group> query = Group.getQuery();
-        query.whereEqualTo("name", "Kista Gang");
-        query.getFirstInBackground(new GetCallback<Group>() {
-            public void done(Group group, ParseException e) {
-                if (group == null) {
-                    Log.d("group", "The getFirst request failed.");
-                } else {
-                    Log.d("group", "Retrieved the object.");
-
-                    //group.addMembers();
-
-                    mGroupName.setText(group.getName());
-                    mGroupMembers.setText(String.valueOf(group.getMembersAmount()));
-
-                    group.getMembersList().getQuery().findInBackground(new FindCallback<ParseUser>() {
-                        @Override
-                        public void done(List<ParseUser> list, ParseException e) {
-                            if (e == null) {
-                                mMembers.clear();
-                                for (ParseUser user : list) {
-                                    mMembers.add(user);
-                                }
-                                Log.d("group", mMembers.toString());
-                                mMembersAdapter.notifyDataSetChanged();
-                            } else {
-                                Log.d("group", "Error: " + e.getMessage());
-                            }
+    public void getGroupMembers() {
+        if (mCurrentGroup != null) {
+            mCurrentGroup.getMembersList().getQuery().findInBackground(new FindCallback<ParseUser>() {
+                @Override
+                public void done(List<ParseUser> list, ParseException e) {
+                    if (e == null) {
+                        mMembers.clear();
+                        for (ParseUser user : list) {
+                            mMembers.add(user);
                         }
-                    });
+                        Log.d("group", mMembers.toString());
+                        mMembersAdapter.notifyDataSetChanged();
+                    } else {
+                        Log.d("group", "Error: " + e.getMessage());
+                    }
                 }
-            }
-        });
+            });
+        }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -132,6 +125,14 @@ public class GroupFragment extends Fragment {
         mGroupMembersList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mMembersAdapter = new MembersRecyclerViewAdapter(getActivity(), mMembers);
         mGroupMembersList.setAdapter(mMembersAdapter);
+
+        getGroupMembers();
+
+        mGroupName.setText(mCurrentGroup.getName());
+        mGroupMembers.setText(String.valueOf(mCurrentGroup.getMembersCount()));
+        mGroupNumberBills.setText(String.valueOf(mCurrentGroup.getBillsCount()));
+        mGroupSpent.append(String.valueOf(mCurrentGroup.getSpent()));
+
         return view;
     }
 
@@ -145,6 +146,9 @@ public class GroupFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+        mActivity = (MainActivity) context;
+
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -156,6 +160,7 @@ public class GroupFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        mActivity = null;
         mListener = null;
     }
 

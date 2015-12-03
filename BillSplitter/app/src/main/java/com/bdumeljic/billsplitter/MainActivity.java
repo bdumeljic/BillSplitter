@@ -2,24 +2,23 @@ package com.bdumeljic.billsplitter;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.design.widget.TabLayout;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.TextView;
 
+import com.parse.ParseException;
 import com.parse.ParseUser;
 
 import butterknife.Bind;
@@ -36,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements GroupFragment.OnF
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private ParseUser currentUser;
+    private Group currentGroup;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -71,9 +72,21 @@ public class MainActivity extends AppCompatActivity implements GroupFragment.OnF
             }
         });
 
+        currentUser = ParseUser.getCurrentUser();
+        try {
+            currentGroup = Group.getGroup();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
+    public ParseUser getCurrentUser() {
+        return currentUser;
+    }
 
+    public Group getCurrentGroup() {
+        return currentGroup;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

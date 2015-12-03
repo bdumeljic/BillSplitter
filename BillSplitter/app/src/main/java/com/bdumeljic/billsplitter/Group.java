@@ -15,7 +15,19 @@ public class Group extends ParseObject {
 
     public String getName() { return getString("name"); }
 
-    public int getMembersAmount() {
+    public static Group getGroup() throws ParseException {
+        return getQuery().whereEqualTo("membersList", ParseUser.getCurrentUser()).getFirst();
+    }
+
+    public double getSpent() {
+        return getDouble("spent");
+    }
+
+    public ParseRelation<ParseUser> getMembersList() {
+        return getRelation("membersList");
+    }
+
+    public int getMembersCount() {
         int result = 0;
 
         try {
@@ -27,7 +39,20 @@ public class Group extends ParseObject {
         return result;
     }
 
-    public ParseRelation<ParseUser> getMembersList() {
-        return getRelation("membersList");
+    public ParseRelation<Bill> getBillsList() {
+        return getRelation("billsList");
     }
+
+    public int getBillsCount() {
+        int result = 0;
+
+        try {
+            result = getRelation("billsList").getQuery().count();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
 }
