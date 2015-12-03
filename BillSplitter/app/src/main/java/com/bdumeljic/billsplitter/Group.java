@@ -55,4 +55,8 @@ public class Group extends ParseObject {
         return result;
     }
 
+    public void addBill(Bill bill) {
+        getBillsList().add(bill);
+        saveInBackground();
+    }
 }

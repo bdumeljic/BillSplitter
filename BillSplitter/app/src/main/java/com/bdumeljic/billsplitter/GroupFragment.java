@@ -88,10 +88,7 @@ public class GroupFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        //getGroup();
-
-        Log.d("GroupFragment", "current user " + mActivity.getCurrentUser() + " group " + mActivity.getCurrentGroup());
+        
         mCurrentUser = mActivity.getCurrentUser();
         mCurrentGroup = mActivity.getCurrentGroup();
     }
@@ -100,13 +97,10 @@ public class GroupFragment extends Fragment {
         if (mCurrentGroup != null) {
             mCurrentGroup.getMembersList().getQuery().findInBackground(new FindCallback<ParseUser>() {
                 @Override
-                public void done(List<ParseUser> list, ParseException e) {
+                public void done(List<ParseUser> members, ParseException e) {
                     if (e == null) {
                         mMembers.clear();
-                        for (ParseUser user : list) {
-                            mMembers.add(user);
-                        }
-                        Log.d("group", mMembers.toString());
+                        mMembers.addAll(members);
                         mMembersAdapter.notifyDataSetChanged();
                     } else {
                         Log.d("group", "Error: " + e.getMessage());

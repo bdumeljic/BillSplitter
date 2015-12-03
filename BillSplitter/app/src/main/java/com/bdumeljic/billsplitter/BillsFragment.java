@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,11 @@ public class BillsFragment extends Fragment {
     private BillsRecyclerViewAdapter mBillsAdapter;
 
     private static List<Bill> mBills;
+
+    private ParseUser mCurrentUser;
+    private Group mCurrentGroup;
+
+    private MainActivity mActivity;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -63,7 +69,10 @@ public class BillsFragment extends Fragment {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
 
-        getBills();
+        mCurrentUser = mActivity.getCurrentUser();
+        mCurrentGroup = mActivity.getCurrentGroup();
+
+        getGroupBills();
     }
 
     @Override
@@ -86,25 +95,29 @@ public class BillsFragment extends Fragment {
         return view;
     }
 
-    public void getBills() {
-        Bill.getQuery().findInBackground(new FindCallback<Bill>() {
-            @Override
-            public void done(List<Bill> list, ParseException e) {
-                if (e == null) {
-                    Log.d("bills", "Retrieved " + list.size() + " bills");
-                    mBills.clear();
-                    mBills.addAll(list);
-                    mBillsAdapter.notifyDataSetChanged();
-                } else {
-                    Log.d("bills", "Error: " + e.getMessage());
+    public void getGroupBills() {
+        if (mCurrentGroup != null) {
+            mCurrentGroup.getBillsList().getQuery().findInBackground(new FindCallback<Bill>() {
+                @Override
+                public void done(List<Bill> bills, ParseException e) {
+                    if (e == null) {
+                        mBills.clear();
+                        mBills.addAll(bills);
+                        mBillsAdapter.notifyDataSetChanged();
+                    } else {
+                        Log.d("bills", "Error: " + e.getMessage());
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+        mActivity = (MainActivity) context;
+
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
         } else {
@@ -117,6 +130,7 @@ public class BillsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        mActivity = null;
     }
 
     /**
