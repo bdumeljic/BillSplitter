@@ -9,4 +9,8 @@
     <string name="placeholder_name">Name</string>
     <string name="placeholder_group_name">GROUP NAME</string>
     <string name="title_group_members">Members</string>
+
+    <string-array name="bills">
+        <item >Italian dinner -- 50.90</item>
+    </string-array>
 </resources>
