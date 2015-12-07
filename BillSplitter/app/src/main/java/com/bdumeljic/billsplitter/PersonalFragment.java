@@ -4,11 +4,25 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseUser;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 
 /**
@@ -30,6 +44,19 @@ public class PersonalFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    @Bind(R.id.person_photo) ImageView mPersonPhoto;
+    @Bind(R.id.person_name) TextView mPersonName;
+    @Bind(R.id.person_balance) TextView mPersonBalance;
+    @Bind(R.id.person_bills) TextView mPersonBills;
+
+    @Bind(R.id.list_recent_bills) RecyclerView mPersonRecentBillsList;
+    private RecentBillsRecyclerViewAdapter mRecentBillsAdapter;
+    private static List<Bill> mBills;
+    private MainActivity mActivity;
+
+    private ParseUser mCurrentUser;
+    private Group mCurrentGroup;
 
     public PersonalFragment() {
         // Required empty public constructor
@@ -60,6 +87,10 @@ public class PersonalFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        mCurrentUser = mActivity.getCurrentUser();
+        mCurrentGroup = mActivity.getCurrentGroup();
+        mBills = new ArrayList<Bill>();
     }
 
     @Override
@@ -68,11 +99,46 @@ public class PersonalFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_personal, container, false);
 
-        String[] items = getActivity().getResources().getStringArray(R.array.bills);
-        ListView mPersonalBillsList = (ListView) view.findViewById(R.id.list_recent_bills);
-        mPersonalBillsList.setAdapter(new ArrayAdapter<>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, items));
+        ButterKnife.bind(this, view);
+
+        Glide.with(this)
+                .load(mCurrentUser.getParseFile("photo").getUrl())
+                .centerCrop()
+                .transform(new CircleTransform(mActivity))
+                .into(mPersonPhoto);
+
+        mPersonName.setText(mCurrentUser.getString("name"));
+        mPersonBalance.append(String.valueOf(mCurrentUser.getInt("balance")));
+
+        mPersonRecentBillsList.setLayoutManager(new LinearLayoutManager(mActivity));
+        mRecentBillsAdapter = new RecentBillsRecyclerViewAdapter(mBills);
+        mPersonRecentBillsList.setAdapter(mRecentBillsAdapter);
+
+        getRecentBills();
 
         return view;
+    }
+
+    private void getRecentBills() {
+        if (mCurrentGroup != null) {
+            mCurrentGroup.getBillsList().getQuery().findInBackground(new FindCallback<Bill>() {
+                @Override
+                public void done(List<Bill> bills, ParseException e) {
+                    if (e == null) {
+                        mBills.clear();
+                        for (Bill bill : bills) {
+                            if (mCurrentUser.equals(bill.getPayedBy())) {
+                                mBills.add(bill);
+                            }
+                        }
+                        mRecentBillsAdapter.notifyDataSetChanged();
+                        mPersonBills.setText(String.valueOf(mBills.size()));
+                    } else {
+                        Log.d("bills", "Error: " + e.getMessage());
+                    }
+                }
+            });
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -85,6 +151,9 @@ public class PersonalFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+        mActivity = (MainActivity) context;
+
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -96,6 +165,7 @@ public class PersonalFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        mActivity = null;
         mListener = null;
     }
 

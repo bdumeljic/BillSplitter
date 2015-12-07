@@ -40,7 +40,7 @@ public class BillsRecyclerViewAdapter extends RecyclerView.Adapter<BillsRecycler
         holder.mBill = mValues.get(position);
         holder.mBillNameView.setText(mValues.get(position).getName());
         holder.mBillAmountView.append(String.valueOf(mValues.get(position).getAmount()));
-        holder.mBillPayeeView.setText(mValues.get(position).getPayee());
+        holder.mBillPayeeView.setText(mValues.get(position).getPayeeName());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
