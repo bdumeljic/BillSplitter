@@ -3,6 +3,7 @@ package com.bdumeljic.billsplitter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
@@ -27,8 +28,8 @@ public class DispatchActivity extends AppCompatActivity {
 
     private void doDispatch() {
         if (ParseUser.getCurrentUser() != null && ParseUser.getCurrentUser().getRelation("belongsTo") == null ) {
-            
-        } if else(ParseUser.getCurrentUser() != null) {
+            Log.d("dodod","dsdsfffsdf");
+        } else if (ParseUser.getCurrentUser() != null) {
             startActivity(new Intent(this, MainActivity.class));
         } else {
             ParseLoginBuilder builder = new ParseLoginBuilder(DispatchActivity.this);
