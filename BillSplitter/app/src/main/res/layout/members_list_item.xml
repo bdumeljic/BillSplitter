@@ -17,13 +17,13 @@
         android:layout_centerVertical="true"
         android:paddingLeft="@dimen/text_margin"
         android:paddingRight="@dimen/text_margin"
-        android:textAppearance="@android:style/TextAppearance.Material.Body2" />
+        style="@style/TextAppearance.AppCompat.Body2" />
 
     <android.support.v7.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="€"
-        android:textAppearance="@android:style/TextAppearance.Material.Body2"
+        android:text="@string/euro_sign"
+        style="@style/TextAppearance.AppCompat.Body2"
         android:layout_alignParentEnd="false"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/member_balance" />
@@ -34,6 +34,6 @@
         android:id="@+id/member_balance"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:textAppearance="@android:style/TextAppearance.Material.Body2" />
+        style="@style/TextAppearance.AppCompat.Body2" />
 
 </RelativeLayout>
