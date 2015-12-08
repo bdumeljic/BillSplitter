@@ -21,7 +21,7 @@ public class Bill extends ParseObject {
         return (double) getNumber("amount");
     }
 
-    public String getPayee() {
+    public String getPayeeName() {
         ParseUser user = getParseUser("payedBy");
         String payee = "";
         try {
@@ -35,5 +35,9 @@ public class Bill extends ParseObject {
         } else {
             return "paid by " + payee;
         }
+    }
+
+    public ParseUser getPayedBy() {
+        return getParseUser("payedBy");
     }
 }
