@@ -49,11 +49,11 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="0"
+                        android:text="@string/placeholder_0"
                         android:gravity="center_vertical"
                         android:paddingLeft="@dimen/keyline_16dp"
                         android:paddingRight="@dimen/keyline_16dp"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+                        style="@style/TextAppearance.AppCompat.Title"
                         android:id="@+id/group_number_members" />
 
                     <TextView
@@ -78,7 +78,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="0"
+                        android:text="@string/placeholder_0"
                         android:gravity="center_vertical"
                         android:paddingLeft="@dimen/keyline_16dp"
                         android:paddingRight="@dimen/keyline_16dp"
@@ -108,11 +108,11 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="€ "
+                        android:text="@string/euro_sign"
                         android:gravity="center_vertical"
                         android:paddingLeft="@dimen/keyline_16dp"
                         android:paddingRight="@dimen/keyline_16dp"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+                        style="@style/TextAppearance.AppCompat.Title"
                         android:id="@+id/group_spent" />
 
                     <TextView
@@ -147,14 +147,13 @@
                     android:text="@string/title_group_members"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                    style="@style/TextAppearance.AppCompat.Subhead"
                     android:padding="@dimen/text_margin" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/list_recent_bills"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-
                 </android.support.v7.widget.RecyclerView>
             </LinearLayout>
         </android.support.v7.widget.CardView>

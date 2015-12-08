@@ -17,4 +17,6 @@
     <string name="title_activity_login">Log in</string>
 
     <string name="action_logout">Log Out</string>
+    <string name="euro_sign">€</string>
+    <string name="placeholder_0">0</string>
 </resources>
