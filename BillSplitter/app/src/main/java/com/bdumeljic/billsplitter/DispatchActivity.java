@@ -13,8 +13,8 @@ import com.parse.ParseRelation;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 
-
 import java.io.Console;
+
 
 public class DispatchActivity extends AppCompatActivity {
     private static final int LOGIN_REQUEST = 0;
@@ -27,8 +27,21 @@ public class DispatchActivity extends AppCompatActivity {
     }
 
     private void doDispatch() {
-        if (ParseUser.getCurrentUser() != null && ParseUser.getCurrentUser().getRelation("belongsTo") == null ) {
-            Log.d("dodod","dsdsfffsdf");
+
+        ParseUser user = ParseUser.getCurrentUser();
+        ParseRelation<ParseObject> relation = user.getRelation("belongsTo");
+        int query = 0;
+        try {
+            query = relation.getQuery().count();
+            Log.d("shit", "Query result" + query);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        //Integer numberOfGroups = query.count();
+
+        if (ParseUser.getCurrentUser() != null && query > 0 ) {
+            Log.d("User check","The user doesn't have a group yet,= 0 let him join one or create a new group");
+            startActivity(new Intent(this, JoinGroupActivity.class));
         } else if (ParseUser.getCurrentUser() != null) {
             startActivity(new Intent(this, MainActivity.class));
         } else {
@@ -43,10 +56,6 @@ public class DispatchActivity extends AppCompatActivity {
                     .setParseSignupSubmitButtonText("Sign Up")
                     .build();
             startActivityForResult(parseLoginIntent, LOGIN_REQUEST);
-
-            // Check if the user has a relation with a group
-
-
         }
     }
 

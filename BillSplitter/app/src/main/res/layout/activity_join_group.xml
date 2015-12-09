@@ -10,4 +10,78 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.bdumeljic.billsplitter.JoinGroupActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        style="@style/TextAppearance.AppCompat.Title"
+        android:text="Join a group"
+        android:id="@+id/textView"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Already have a group? Just type the group&apos;s name and join your friends."
+        android:gravity="center"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:id="@+id/new_group_name"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="@dimen/text_margin"
+        android:paddingTop="@dimen/text_margin" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText"
+        android:layout_gravity="center_horizontal" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Join Group"
+        android:id="@+id/join_group"
+        android:layout_gravity="center_horizontal"
+        style="@style/Widget.AppCompat.Button.Colored" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center|bottom"
+        android:orientation="vertical" >
+
+        <TextView
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Don&apos;t have a group yet?"
+            android:id="@+id/textView2"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/text_margin" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="You can easily create a new group and invite your friends."
+            android:gravity="center"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:id="@+id/groupName"
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="@dimen/text_margin"
+            android:paddingTop="@dimen/text_margin" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Create a  Group"
+            android:id="@+id/create_group"
+            android:layout_gravity="center_horizontal"
+            style="@style/Base.Widget.AppCompat.Button.Colored" />
+
+    </LinearLayout>
+
 </LinearLayout>
