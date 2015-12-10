@@ -24,7 +24,7 @@ public class Group extends ParseObject {
     }
 
     public ParseRelation<ParseUser> getMembersList() {
-        return getRelation("membersList").;
+        return getRelation("membersList");
     }
 
     public int getMembersCount() {
