@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/TextAppearance.AppCompat.Display2"
-            android:inputType="number"
+            android:inputType="number|numberDecimal"
             android:layout_marginLeft="@dimen/text_margin"
             android:textAlignment="textEnd"
             android:hint="0.00" />

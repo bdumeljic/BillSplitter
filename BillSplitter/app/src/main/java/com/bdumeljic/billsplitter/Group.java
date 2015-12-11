@@ -23,6 +23,10 @@ public class Group extends ParseObject {
         return getDouble("spent");
     }
 
+    public void addToSpent(double amount) {
+        put("spent", getSpent() + amount);
+    }
+
     public ParseRelation<ParseUser> getMembersList() {
         return getRelation("membersList");
     }

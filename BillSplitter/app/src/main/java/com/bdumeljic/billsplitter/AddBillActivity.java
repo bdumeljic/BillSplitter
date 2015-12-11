@@ -1,11 +1,13 @@
 package com.bdumeljic.billsplitter;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -109,14 +111,18 @@ public class AddBillActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_add_bill) {
-            validateBill();
+            try {
+                validateBill();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void validateBill(){
+    public void validateBill() throws ParseException {
         if (mBillAmount.getText().toString().isEmpty()) {
             mBillAmount.setError(getString(R.string.err_amount));
             Toast.makeText(AddBillActivity.this, R.string.err_amount, Toast.LENGTH_SHORT).show();
@@ -130,18 +136,73 @@ public class AddBillActivity extends AppCompatActivity {
         }
     }
 
-    public void saveBill() {
+    public void saveBill() throws ParseException {
+        // Show progress dialog
+        final ProgressDialog progressDialog = new ProgressDialog(AddBillActivity.this);
+        progressDialog.setMessage("Adding bill ...");
+        progressDialog.show();
 
+        // Get data from view
+        final double amount = Double.parseDouble(mBillAmount.getText().toString());
+        String description = mBillDescription.getText().toString();
 
+        // Create a new bill
+        final Bill newBill = new Bill();
+        newBill.setAmount(amount);
+        newBill.setDescription(description);
+        newBill.setPayee(mCurrentUser);
+        newBill.setGroup(mCurrentGroup);
+        newBill.save();
 
+        // Handle individual shares for each member participating in the bill
+        saveShares(amount, newBill);
 
+        // Add spent amount for current user to spent and balance
+        Balance mCurrentUserBalance = (Balance) mCurrentUser.get("balances");
+        mCurrentUserBalance.addSpent(amount);
+        mCurrentUserBalance.addBalance(amount);
+        mCurrentUserBalance.save();
 
+        // Add amount spent to group total
+        mCurrentGroup.addToSpent(amount);
+        mCurrentGroup.save();
+
+        progressDialog.dismiss();
+    }
+
+    private void saveShares(double amount, Bill newBill) throws ParseException {
+        List<ParseUser> sharedAmongst = new ArrayList();
         for (int i = mMembers.size(); i >= 0; i--) {
             if (mMultiSelector.isSelected(i, 0)) {
                 ParseUser user = mMembers.get(i);
-
-
+                sharedAmongst.add(user);
             }
+        }
+
+        int sharers = sharedAmongst.size();
+        double amount_sharer = amount/sharers;
+
+        Log.d("addbill", "amount s" + String.valueOf(amount_sharer));
+
+        for (ParseUser user : sharedAmongst) {
+            Shares share = new Shares();
+            share.setUser(user);
+            share.setGroup(mCurrentGroup);
+            share.setAmount(amount_sharer);
+            share.setBill(newBill);
+            share.save();
+
+            Log.d("addbill", "user " + user.toString());
+
+            Balance userBalance = user.getParseObject("balances").fetchIfNeeded();
+            Log.d("addbill", "user b " + userBalance.toString());
+
+            userBalance.setDebt(amount_sharer);
+            userBalance.subBalance(amount_sharer);
+            userBalance.save();
+
+            //user.put("balance", user.getDouble("balance") - amount_sharer);
+            //user.save();
         }
     }
 
