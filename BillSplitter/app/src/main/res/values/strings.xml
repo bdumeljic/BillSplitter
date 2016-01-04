@@ -25,4 +25,14 @@
     <string name="err_amount">How much did you spend?</string>
     <string name="err_description">What did you pay?</string>
     <string name="err_shares">Who are you sharing this bill with?</string>
+    <string name="err_name_join">What is the name of the group you want to join?</string>
+    <string name="err_name_create">What is the name of the group you want to create?</string>
+    <string name="err_group_notexist">This group does not exist</string>
+    <string name="join_group_text">Already have a group? Just type the group\'s name and join your friends.</string>
+    <string name="create_group_text">You can easily create a new group and invite your friends.</string>
+    <string name="create_group_title">Don\'t have a group yet?</string>
+    <string name="button_join_group">Join Group</string>
+    <string name="button_create_a_group">Create a Group</string>
+    <string name="join_group_title">Join existing group</string>
+    <string name="hint_description">Description</string>
 </resources>
