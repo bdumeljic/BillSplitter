@@ -23,6 +23,10 @@ public class Group extends ParseObject {
         return getDouble("spent");
     }
 
+    public void addToSpent(double amount) {
+        put("spent", getSpent() + amount);
+    }
+
     public ParseRelation<ParseUser> getMembersList() {
         return getRelation("membersList");
     }
@@ -43,20 +47,17 @@ public class Group extends ParseObject {
         return getRelation("billsList");
     }
 
-    public int getBillsCount() {
-        int result = 0;
+    public ParseQuery<Bill> getBills() {
+        return Bill.getQuery().whereEqualTo("partOf", this);
+    }
 
+    public int getBillsCount() {
         try {
-            result = getRelation("billsList").getQuery().count();
+            return Bill.getQuery().whereEqualTo("partOf", this).count();
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        return result;
-    }
-
-    public void addBill(Bill bill) {
-        getBillsList().add(bill);
-        saveInBackground();
+        return 0;
     }
 }

@@ -18,7 +18,7 @@ public class Bill extends ParseObject {
     }
 
     public double getAmount() {
-        return (double) getNumber("amount");
+        return getDouble("amount");
     }
 
     public String getPayeeName() {
@@ -39,5 +39,22 @@ public class Bill extends ParseObject {
 
     public ParseUser getPayedBy() {
         return getParseUser("payedBy");
+    }
+
+
+    public void setAmount(double amount) {
+        put("amount", amount);
+    }
+
+    public void setDescription(String description) {
+        put("name", description);
+    }
+
+    public void setPayee(ParseUser mCurrentUser) {
+        put("payedBy", mCurrentUser);
+    }
+
+    public void setGroup(Group mCurrentGroup) {
+        put("partOf", mCurrentGroup);
     }
 }

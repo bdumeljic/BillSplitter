@@ -78,7 +78,7 @@ public class BillsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_bills_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_bills, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -97,7 +97,7 @@ public class BillsFragment extends Fragment {
 
     public void getGroupBills() {
         if (mCurrentGroup != null) {
-            mCurrentGroup.getBillsList().getQuery().findInBackground(new FindCallback<Bill>() {
+            mCurrentGroup.getBills().findInBackground(new FindCallback<Bill>() {
                 @Override
                 public void done(List<Bill> bills, ParseException e) {
                     if (e == null) {

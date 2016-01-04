@@ -13,6 +13,8 @@ public class Application extends android.app.Application {
 
         ParseObject.registerSubclass(Bill.class);
         ParseObject.registerSubclass(Group.class);
+        ParseObject.registerSubclass(Shares.class);
+        ParseObject.registerSubclass(Balance.class);
 
         Parse.initialize(this, getResources().getString(R.string.parse_application_id), getResources().getString(R.string.parse_client_key));
     }
