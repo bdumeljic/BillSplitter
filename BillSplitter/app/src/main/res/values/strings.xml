@@ -25,4 +25,6 @@
     <string name="err_amount">How much did you spend?</string>
     <string name="err_description">What did you pay?</string>
     <string name="err_shares">Who are you sharing this bill with?</string>
+    <string name="err_name">What is the name of the group you want to join?</string>
+    <string name="err_group_notexist">This group does not exist</string>
 </resources>

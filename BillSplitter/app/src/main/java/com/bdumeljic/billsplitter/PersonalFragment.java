@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -103,11 +104,14 @@ public class PersonalFragment extends Fragment {
 
         ButterKnife.bind(this, view);
 
-        Glide.with(this)
-                .load(mCurrentUser.getParseFile("photo").getUrl())
-                .centerCrop()
-                .transform(new CircleTransform(mActivity))
-                .into(mPersonPhoto);
+        ParseFile file = mCurrentUser.getParseFile("photo");
+        if (file != null) {
+            Glide.with(this)
+                    .load(file.getUrl())
+                    .centerCrop()
+                    .transform(new CircleTransform(mActivity))
+                    .into(mPersonPhoto);
+        }
 
         mPersonName.setText(mCurrentUser.getString("name"));
 

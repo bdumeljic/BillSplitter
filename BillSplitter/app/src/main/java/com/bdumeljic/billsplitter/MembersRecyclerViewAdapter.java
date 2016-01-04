@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 import java.util.Collections;
@@ -44,11 +45,14 @@ public class MembersRecyclerViewAdapter extends RecyclerView.Adapter<MembersRecy
 
         holder.mUserBalance.setText(String.valueOf(userBalance.getBalance()));
 
-        Glide.with(mContext)
-                .load(mUsers.get(position).getParseFile("photo").getUrl())
-                .centerCrop()
-                .transform(new CircleTransform(mContext))
-                .into(holder.mUserPhoto);
+        ParseFile file = mUsers.get(position).getParseFile("photo");
+        if (file != null) {
+            Glide.with(mContext)
+                    .load(file.getUrl())
+                    .centerCrop()
+                    .transform(new CircleTransform(mContext))
+                    .into(holder.mUserPhoto);
+        }
     }
 
     @Override

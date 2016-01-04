@@ -19,6 +19,7 @@ import com.bignerdranch.android.multiselector.MultiSelector;
 import com.bignerdranch.android.multiselector.SwappingHolder;
 import com.bumptech.glide.Glide;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -68,11 +69,15 @@ public class AddBillActivity extends AppCompatActivity {
 
         getGroupMembers();
 
-        Glide.with(this)
-                .load(mCurrentUser.getParseFile("photo").getUrl())
-                .centerCrop()
-                .transform(new CircleTransform(this))
-                .into(mPaidPhoto);
+        ParseFile file = mCurrentUser.getParseFile("photo");
+        if (file != null) {
+            Glide.with(this)
+                    .load(file.getUrl())
+                    .centerCrop()
+                    .transform(new CircleTransform(this))
+                    .into(mPaidPhoto);
+        }
+
         mPaidName.setText(mCurrentUser.getString("name"));
 
         mSharesList.setLayoutManager(new LinearLayoutManager(this));
@@ -213,11 +218,15 @@ public class AddBillActivity extends AppCompatActivity {
             mUserNameView.setText(mUser.getString("name"));
             //mUserBalance.setText(String.valueOf(mUser.getInt("balance")));
 
-            Glide.with(getApplicationContext())
-                    .load(mUser.getParseFile("photo").getUrl())
-                    .centerCrop()
-                    .transform(new CircleTransform(getApplicationContext()))
-                    .into(mUserPhoto);
+            ParseFile file = mUser.getParseFile("photo");
+            if (file != null) {
+                Glide.with(getApplicationContext())
+                        .load(file.getUrl())
+                        .centerCrop()
+                        .transform(new CircleTransform(getApplicationContext()))
+                        .into(mUserPhoto);
+            }
+
         }
 
         @Override

@@ -27,6 +27,10 @@ public class Group extends ParseObject {
         put("spent", getSpent() + amount);
     }
 
+    public void addMember(ParseUser currentUser) {
+        getMembersList().add(currentUser);
+    }
+
     public ParseRelation<ParseUser> getMembersList() {
         return getRelation("membersList");
     }
@@ -43,10 +47,6 @@ public class Group extends ParseObject {
         return result;
     }
 
-    public ParseRelation<Bill> getBillsList() {
-        return getRelation("billsList");
-    }
-
     public ParseQuery<Bill> getBills() {
         return Bill.getQuery().whereEqualTo("partOf", this);
     }
@@ -60,4 +60,10 @@ public class Group extends ParseObject {
 
         return 0;
     }
+
+    public static ParseQuery<Group> findGroup(String name) {
+        return getQuery().whereEqualTo("name", name);
+    }
+
+
 }

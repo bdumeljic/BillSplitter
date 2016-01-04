@@ -3,21 +3,14 @@ package com.bdumeljic.billsplitter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseRelation;
-import com.parse.ParseClassName;
-import com.parse.ParseException;
-
-import java.io.Console;
 
 
 public class DispatchActivity extends AppCompatActivity {
     private static final int LOGIN_REQUEST = 0;
+    private static final int JOIN_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,24 +20,14 @@ public class DispatchActivity extends AppCompatActivity {
     }
 
     private void doDispatch() {
-
-        ParseUser user = ParseUser.getCurrentUser();
-        ParseRelation<ParseObject> relation = user.getRelation("belongsTo");
-        int query = 0;
-        try {
-            query = relation.getQuery().count();
-            Log.d("shit", "Query result" + query);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        //Integer numberOfGroups = query.count();
-
-        if (ParseUser.getCurrentUser() != null && query > 0 ) {
-            Log.d("User check","The user doesn't have a group yet,= 0 let him join one or create a new group");
-            startActivity(new Intent(this, JoinGroupActivity.class));
-        } else if (ParseUser.getCurrentUser() != null) {
+        if (ParseUser.getCurrentUser() != null && ParseUser.getCurrentUser().get("belongsTo") != null) {
+            // If there is a user logged in and they are part of a group, then proceed to the main view.
             startActivity(new Intent(this, MainActivity.class));
+        } else if (ParseUser.getCurrentUser() != null) {
+            // If there is a user logged in, but the user doesn't have a group yet, then let him join one or create a new group
+            startActivityForResult(new Intent(this, JoinGroupActivity.class), JOIN_REQUEST);
         } else {
+            // If there is no user logged in, then go to the log in or sign up act
             ParseLoginBuilder builder = new ParseLoginBuilder(DispatchActivity.this);
             Intent parseLoginIntent = builder.setAppLogo(R.drawable.logo)
                     .setParseLoginEnabled(true)
@@ -63,7 +46,7 @@ public class DispatchActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == LOGIN_REQUEST) {
+        if (requestCode == LOGIN_REQUEST || requestCode == JOIN_REQUEST) {
             doDispatch();
         }
     }
