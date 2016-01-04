@@ -1,13 +1,11 @@
 package com.bdumeljic.billsplitter;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -137,11 +135,6 @@ public class AddBillActivity extends AppCompatActivity {
     }
 
     public void saveBill() throws ParseException {
-        // Show progress dialog
-        final ProgressDialog progressDialog = new ProgressDialog(AddBillActivity.this);
-        progressDialog.setMessage("Adding bill ...");
-        progressDialog.show();
-
         // Get data from view
         final double amount = Double.parseDouble(mBillAmount.getText().toString());
         String description = mBillDescription.getText().toString();
@@ -167,7 +160,8 @@ public class AddBillActivity extends AppCompatActivity {
         mCurrentGroup.addToSpent(amount);
         mCurrentGroup.save();
 
-        progressDialog.dismiss();
+        setResult(RESULT_OK);
+        finish();
     }
 
     private void saveShares(double amount, Bill newBill) throws ParseException {
@@ -182,8 +176,6 @@ public class AddBillActivity extends AppCompatActivity {
         int sharers = sharedAmongst.size();
         double amount_sharer = amount/sharers;
 
-        Log.d("addbill", "amount s" + String.valueOf(amount_sharer));
-
         for (ParseUser user : sharedAmongst) {
             Shares share = new Shares();
             share.setUser(user);
@@ -192,17 +184,10 @@ public class AddBillActivity extends AppCompatActivity {
             share.setBill(newBill);
             share.save();
 
-            Log.d("addbill", "user " + user.toString());
-
             Balance userBalance = user.getParseObject("balances").fetchIfNeeded();
-            Log.d("addbill", "user b " + userBalance.toString());
-
             userBalance.setDebt(amount_sharer);
             userBalance.subBalance(amount_sharer);
             userBalance.save();
-
-            //user.put("balance", user.getDouble("balance") - amount_sharer);
-            //user.save();
         }
     }
 

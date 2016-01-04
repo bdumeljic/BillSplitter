@@ -18,7 +18,7 @@ public class Bill extends ParseObject {
     }
 
     public double getAmount() {
-        return (double) getNumber("amount");
+        return getDouble("amount");
     }
 
     public String getPayeeName() {

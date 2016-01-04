@@ -48,6 +48,8 @@ public class PersonalFragment extends Fragment {
     @Bind(R.id.person_photo) ImageView mPersonPhoto;
     @Bind(R.id.person_name) TextView mPersonName;
     @Bind(R.id.person_balance) TextView mPersonBalance;
+    @Bind(R.id.person_spent) TextView mPersonSpent;
+    @Bind(R.id.person_debt) TextView mPersonDebt;
     @Bind(R.id.person_bills) TextView mPersonBills;
 
     @Bind(R.id.list_recent_bills) RecyclerView mPersonRecentBillsList;
@@ -108,29 +110,37 @@ public class PersonalFragment extends Fragment {
                 .into(mPersonPhoto);
 
         mPersonName.setText(mCurrentUser.getString("name"));
-        mPersonBalance.append(String.valueOf(mCurrentUser.getInt("balance")));
 
         mPersonRecentBillsList.setLayoutManager(new LinearLayoutManager(mActivity));
         mRecentBillsAdapter = new RecentBillsRecyclerViewAdapter(mBills);
         mPersonRecentBillsList.setAdapter(mRecentBillsAdapter);
 
         getRecentBills();
+        getBalances();
 
         return view;
     }
 
+    private void getBalances() {
+        Balance mCurrentUserBalance = null;
+        try {
+            mCurrentUserBalance = mCurrentUser.getParseObject("balances").fetchIfNeeded();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        mPersonBalance.append(String.valueOf(mCurrentUserBalance.getBalance()));
+        mPersonSpent.append(String.valueOf(mCurrentUserBalance.getSpent()));
+        mPersonDebt.append(String.valueOf(mCurrentUserBalance.getDebt()));
+    }
+
     private void getRecentBills() {
         if (mCurrentGroup != null) {
-            mCurrentGroup.getBillsList().getQuery().findInBackground(new FindCallback<Bill>() {
+            mCurrentGroup.getBills().whereEqualTo("payedBy", mCurrentUser).findInBackground(new FindCallback<Bill>() {
                 @Override
                 public void done(List<Bill> bills, ParseException e) {
                     if (e == null) {
                         mBills.clear();
-                        for (Bill bill : bills) {
-                            if (mCurrentUser.equals(bill.getPayedBy())) {
-                                mBills.add(bill);
-                            }
-                        }
+                        mBills.addAll(bills);
                         mRecentBillsAdapter.notifyDataSetChanged();
                         mPersonBills.setText(String.valueOf(mBills.size()));
                     } else {

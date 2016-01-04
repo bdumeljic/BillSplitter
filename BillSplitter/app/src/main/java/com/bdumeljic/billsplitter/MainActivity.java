@@ -23,6 +23,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements GroupFragment.OnFragmentInteractionListener, PersonalFragment.OnFragmentInteractionListener, BillsFragment.OnListFragmentInteractionListener {
 
+    private static final int ADD_BILL = 1;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements GroupFragment.OnF
         mAddBillFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, AddBillActivity.class));
+                startActivityForResult(new Intent(MainActivity.this, AddBillActivity.class), ADD_BILL);
             }
         });
 
@@ -83,6 +84,16 @@ public class MainActivity extends AppCompatActivity implements GroupFragment.OnF
 
     public Group getCurrentGroup() {
         return currentGroup;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == ADD_BILL && resultCode == RESULT_OK) {
+            finish();
+            startActivity(getIntent());
+        }
     }
 
     @Override
