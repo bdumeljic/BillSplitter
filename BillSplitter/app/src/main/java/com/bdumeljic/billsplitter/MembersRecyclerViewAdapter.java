@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.parse.ParseException;
 import com.parse.ParseUser;
 
 import java.util.Collections;
@@ -33,7 +34,15 @@ public class MembersRecyclerViewAdapter extends RecyclerView.Adapter<MembersRecy
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.mUser = mUsers.get(position);
         holder.mUserNameView.setText(mUsers.get(position).getString("name"));
-        holder.mUserBalance.setText(String.valueOf(mUsers.get(position).getInt("balance")));
+
+        Balance userBalance = null;
+        try {
+            userBalance = holder.mUser.getParseObject("balances").fetchIfNeeded();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        holder.mUserBalance.setText(String.valueOf(userBalance.getBalance()));
 
         Glide.with(mContext)
                 .load(mUsers.get(position).getParseFile("photo").getUrl())
