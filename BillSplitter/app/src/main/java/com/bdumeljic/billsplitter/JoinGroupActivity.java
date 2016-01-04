@@ -15,6 +15,7 @@ import butterknife.OnClick;
 public class JoinGroupActivity extends AppCompatActivity {
 
     @Bind(R.id.text_join_group) AppCompatEditText mJoinGroupName;
+    @Bind(R.id.text_create_group) AppCompatEditText mCreateGroupName;
 
     ParseUser currentUser;
 
@@ -44,10 +45,10 @@ public class JoinGroupActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.button_join_group)
-    public void join() {
+    public void joinGroup() {
         String name = mJoinGroupName.getText().toString();
         if (name.isEmpty()) {
-            mJoinGroupName.setError(getString(R.string.err_name));
+            mJoinGroupName.setError(getString(R.string.err_name_join));
         } else {
             Group.findGroup(name).getFirstInBackground(new GetCallback<Group>() {
                 @Override
@@ -56,24 +57,47 @@ public class JoinGroupActivity extends AppCompatActivity {
                         mJoinGroupName.setError(getString(R.string.err_group_notexist));
                     } else {
                         try {
-                            addUserToGroup(group);
+                            currentUser.put("belongsTo", group);
+                            currentUser.save();
+
+                            group.addMember(currentUser);
+                            group.save();
                         } catch (ParseException e1) {
                             e1.printStackTrace();
                         }
+
+                        setResult(RESULT_OK);
+                        finish();
                     }
                 }
             });
         }
     }
 
-    private void addUserToGroup(Group group) throws ParseException {
-        currentUser.put("belongsTo", group);
-        currentUser.save();
+    @OnClick(R.id.button_create_group)
+    public void createGroup() {
+        String name = mCreateGroupName.getText().toString();
+        if (name.isEmpty()) {
+            mCreateGroupName.setError(getString(R.string.err_name_create));
+        } else {
+            Group group = new Group();
+            group.setName(name);
+            group.addMember(currentUser);
+            try {
+                group.save();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
-        group.addMember(currentUser);
-        group.save();
+            currentUser.put("belongsTo", group);
+            try {
+                currentUser.save();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
-        finish();
+            setResult(RESULT_OK);
+            finish();
+        }
     }
-
 }

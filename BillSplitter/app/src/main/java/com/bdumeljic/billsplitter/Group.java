@@ -15,6 +15,10 @@ public class Group extends ParseObject {
 
     public String getName() { return getString("name"); }
 
+    public void setName(String name) {
+        put("name", name);
+    }
+
     public static Group getGroup() throws ParseException {
         return getQuery().whereEqualTo("membersList", ParseUser.getCurrentUser()).getFirst();
     }
@@ -64,6 +68,4 @@ public class Group extends ParseObject {
     public static ParseQuery<Group> findGroup(String name) {
         return getQuery().whereEqualTo("name", name);
     }
-
-
 }
