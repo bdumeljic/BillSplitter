@@ -1,2 +1,4 @@
 # BillSplitter
-Splitting bills amongst your roommates.
+Splitting bills withing a group of friends.
+
+University project for Developing Mobile Applications at KTH, Stockholm.
